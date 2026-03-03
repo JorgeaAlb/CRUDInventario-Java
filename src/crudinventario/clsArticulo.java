@@ -24,20 +24,19 @@ public class clsArticulo {
 
     // imprimir en consola los datos del articulo
     public String aTexto() {
-        String articulo = this.codigo + "|" + this.descripcion + "|" + this.precio;
-        System.out.print(articulo);
-        return articulo;
-
+        // Solo retornamos la cadena, no imprimimos aquí
+        return this.codigo + "|" + this.descripcion + "|" + this.precio;
     }
 
     // guardar informacion
     public void guardar() {
-        // instalacion de la clase de MODELO
         mArticulo article = new mArticulo();
-        // enviamos la cadena de texto para guardar en el archivo
-        article.Insertar(this.aTexto());
+        String textoArticulo = this.aTexto(); // Obtenemos el texto una sola vez
 
-        System.out.println(this.aTexto());
+        // Enviamos la cadena para guardar en el archivo
+        article.Insertar(textoArticulo);
 
+        // Si quieres verlo en consola una sola vez:
+        System.out.println(textoArticulo);
     }
 }
