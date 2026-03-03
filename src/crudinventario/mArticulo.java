@@ -38,7 +38,7 @@ public class mArticulo {
 
     }
 
-    public void Consultar() {
+    public ArrayList<String> Consultar() {
         ArrayList<String> listaRegistros = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("listado_articulos.txt"))) {
             String linea;
@@ -55,10 +55,6 @@ public class mArticulo {
             listaRegistros.add("Error al cargar los datos");
         }
 
-        // 2. En lugar de imprimir la lista completa, recorremos para imprimir línea por línea
-        for (String registro : listaRegistros) {
-            System.out.println(registro);
-        }
+        return listaRegistros; 
     }
-
 }

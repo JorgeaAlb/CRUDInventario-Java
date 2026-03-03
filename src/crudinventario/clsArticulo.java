@@ -4,6 +4,9 @@
  */
 package crudinventario;
 
+import java.util.ArrayList;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author Jorge
@@ -21,7 +24,11 @@ public class clsArticulo {
         this.precio = precio;
 
     }
-
+        
+    public clsArticulo(){
+        
+    }
+    
     // imprimir en consola los datos del articulo
     public String aTexto() {
         // Solo retornamos la cadena, no imprimimos aquí
@@ -38,5 +45,18 @@ public class clsArticulo {
 
         // Si quieres verlo en consola una sola vez:
         System.out.println(textoArticulo);
+    }
+    public DefaultListModel<String> llenarLista(){
+        mArticulo MArticle = new mArticulo();
+        
+        ArrayList<String> datos = MArticle.Consultar();
+        
+        DefaultListModel<String> modelLista = new DefaultListModel<>();
+        
+        for (String registro: datos){
+            modelLista.addElement(registro);
+        }
+        
+        return modelLista;
     }
 }
