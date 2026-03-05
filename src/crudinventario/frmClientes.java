@@ -256,17 +256,23 @@ public class frmClientes extends javax.swing.JFrame {
         }// </editor-fold>//GEN-END:initComponents
 
         private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {
-                clsClientes cCliente = new clsClientes(
-                                txtNoCliente.getText(),
-                                txtNombre.getText(),
-                                txtTipoCliente.getText(),
-                                txtRazonSocial.getText());
-                cCliente.guardar();
-                // Limpiar campos después de guardar
-                txtNoCliente.setText("");
-                txtNombre.setText("");
-                txtTipoCliente.setText("");
-                txtRazonSocial.setText("");
+                try {
+                        clsClientes cCliente = new clsClientes(
+                                        Integer.parseInt(txtNoCliente.getText()),
+                                        txtNombre.getText(),
+                                        txtTipoCliente.getText(),
+                                        txtRazonSocial.getText());
+                        cCliente.guardar();
+                        // Limpiar campos después de guardar
+                        txtNoCliente.setText("");
+                        txtNombre.setText("");
+                        txtTipoCliente.setText("");
+                        txtRazonSocial.setText("");
+                } catch (NumberFormatException e) {
+                        javax.swing.JOptionPane.showMessageDialog(this,
+                                        "El número de cliente debe ser un valor numérico.",
+                                        "Error de entrada", javax.swing.JOptionPane.ERROR_MESSAGE);
+                }
         }
 
         private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {

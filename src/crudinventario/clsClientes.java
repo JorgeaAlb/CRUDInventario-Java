@@ -8,12 +8,12 @@ import javax.swing.DefaultListModel;
  * @author Jorge
  */
 public class clsClientes {
-    private String noCliente;
+    private int noCliente;
     private String nombre;
     private String tipoCliente;
     private String razonSocial;
 
-    public clsClientes(String noCliente, String nombre, String tipoCliente, String razonSocial) {
+    public clsClientes(int noCliente, String nombre, String tipoCliente, String razonSocial) {
         this.noCliente = noCliente;
         this.nombre = nombre;
         this.tipoCliente = tipoCliente;
@@ -25,6 +25,38 @@ public class clsClientes {
 
     public String aTexto() {
         return this.noCliente + "|" + this.nombre + "|" + this.tipoCliente + "|" + this.razonSocial;
+    }
+
+    public int getNoCliente() {
+        return noCliente;
+    }
+
+    public void setNoCliente(int noCliente) {
+        this.noCliente = noCliente;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getTipoCliente() {
+        return tipoCliente;
+    }
+
+    public void setTipoCliente(String tipoCliente) {
+        this.tipoCliente = tipoCliente;
+    }
+
+    public String getRazonSocial() {
+        return razonSocial;
+    }
+
+    public void setRazonSocial(String razonSocial) {
+        this.razonSocial = razonSocial;
     }
 
     public void guardar() {
