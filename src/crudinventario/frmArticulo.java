@@ -22,6 +22,10 @@ public class frmArticulo extends javax.swing.JFrame {
         initComponents();
     }
 
+    
+    //Variable para guardar temporalmente los datos originales 
+    clsArticulo updateArticulo;
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -254,7 +258,7 @@ public class frmArticulo extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCodigo1ActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        // TODO add your handling code here:
+        updateArticulo.actualizar(txtCodigo1.getText(), txtDescripcion1.getText(), txtCodigo1.getText());
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void txtDescripcion1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDescripcion1ActionPerformed
@@ -267,9 +271,15 @@ public class frmArticulo extends javax.swing.JFrame {
             String registroSeleccionado = lstArticulo.getSelectedValue();
             //Separar los datos por el caracter especial 
             String[] datos = registroSeleccionado.split("\\|");
+            String codigo = datos[0].replace("Codigo:", "");
+            String descripcion = datos[1].replace("Descripcion:", "");
+            String precio = datos[2].replace("Precio:", "");
+            
             txtCodigo1.setText(datos[0].replace("Codigo:", ""));
             txtDescripcion1.setText(datos[1].replace("Descripcion:", ""));
             txtPrecio1.setText(datos[2].replace("Precio:", ""));
+            //Llenamos el objeto con los valores originales 
+            updateArticulo = new clsArticulo(codigo,descripcion,Double.parseDouble(precio));
             
         }
     }//GEN-LAST:event_lstArticuloValueChanged
