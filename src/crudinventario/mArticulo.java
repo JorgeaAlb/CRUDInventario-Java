@@ -74,8 +74,8 @@ public class mArticulo {
                     actualizado = true;
                 } else {
                     bw.write(lineaLeida);
-                }
-                bw.newLine();
+                    bw.newLine();
+                }                
             }
             
         }catch(Exception e){
@@ -95,4 +95,43 @@ public class mArticulo {
             System.out.println("No se encuentro el registro");
         }   
     }
+    
+    public void delete(String lineActual, String archivoOriginal){
+        
+        java.io.File fileOriginal = new java.io.File(archivoOriginal);
+        java.io.File fileTemporal = new java.io.File("temporal.txt");
+        
+        String lineaLeida;
+        Boolean eliminado = false;
+        
+        try(BufferedReader br = new BufferedReader(new FileReader(fileOriginal));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(fileTemporal));) {
+        
+            while((lineaLeida = br.readLine()) != null){
+                if(lineaLeida.equals(lineActual)){
+                    eliminado = true;
+                } else {
+                    bw.write(lineaLeida);
+                }
+                bw.newLine();
+            }
+            
+        }catch(Exception e){
+            System.out.println("Error al borrar" + e.getMessage());
+        }
+        
+        // Eliminacion de archiv0o original 
+        if(eliminado){
+            if(fileOriginal.delete()){
+                fileTemporal.renameTo(fileOriginal);
+                System.out.println("Registro Eliminado");
+            } else {
+                System.out.println("Error: No se pudo borrar el archivo");
+            }
+        }else {
+            fileTemporal.delete();
+            System.out.println("No se encuentro el registro");
+        }   
+    }
+    
 }

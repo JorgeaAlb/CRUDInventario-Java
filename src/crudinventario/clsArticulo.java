@@ -24,15 +24,19 @@ public class clsArticulo {
         this.precio = precio;
 
     }
-        
+    
     public clsArticulo(){
-        
+    
     }
     
     // imprimir en consola los datos del articulo
     public String aTexto() {
         // Solo retornamos la cadena, no imprimimos aquí
         return this.codigo + "|" + this.descripcion + "|" + this.precio;
+    }
+    
+    public String getDescripcion(){
+        return this.descripcion;
     }
 
     // guardar informacion
@@ -74,4 +78,16 @@ public class clsArticulo {
         
         mArticle.update(lineaOriginal, nuevaLinea, "listado_articulos.txt");
     }
+    
+    public void eliminar(){
+        
+        String lineaOriginal = this.codigo + "|" + this.descripcion + "|" + this.precio;
+        
+        System.out.println("Valores Originales:" + lineaOriginal);
+        
+        //Solicita la aeliminacion del registro
+        mArticulo mArticle = new mArticulo();
+        mArticle.delete(lineaOriginal, "listado_articulos.txt");
+    }
+    
 }
