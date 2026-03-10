@@ -271,9 +271,9 @@ public class frmArticulo extends javax.swing.JFrame {
             String registroSeleccionado = lstArticulo.getSelectedValue();
             //Separar los datos por el caracter especial 
             String[] datos = registroSeleccionado.split("\\|");
-            String codigo = datos[0].replace("Codigo:", "");
-            String descripcion = datos[1].replace("Descripcion:", "");
-            String precio = datos[2].replace("Precio:", "");
+            String codigo = datos[0].replace("Codigo: ", "");
+            String descripcion = datos[1].replace(" Descripcion: ", "");
+            String precio = datos[2].replace(" Precio: ", "");
             
             txtCodigo1.setText(datos[0].replace("Codigo:", ""));
             txtDescripcion1.setText(datos[1].replace("Descripcion:", ""));
