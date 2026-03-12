@@ -66,6 +66,19 @@ public class clsClientes {
         System.out.println("Cliente guardado: " + textoCliente);
     }
 
+    public void actualizar(String newCliente, String newnombre, String newtipo, String newrazon) {
+        mClientes model = new mClientes();
+        String lineaActual = this.aTexto();
+        String lineaNueva = newCliente + "|" + newnombre + "|" + newtipo + "|" + newrazon;
+        model.Update(lineaActual, lineaNueva, "listado_clientes.txt");
+    }
+
+    public void eliminar() {
+        mClientes model = new mClientes();
+        String lineaActual = this.aTexto();
+        model.Delete(lineaActual, "listado_clientes.txt");
+    }
+
     public DefaultListModel<String> llenarLista() {
         mClientes model = new mClientes();
         ArrayList<String> datos = model.Consultar();
