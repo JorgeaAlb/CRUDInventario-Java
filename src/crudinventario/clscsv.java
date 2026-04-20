@@ -17,28 +17,18 @@ public class clscsv {
     String archivo = "inventario.csv";
     
     public void importarDatos(){    
-        try(BufferedReader br = new BufferedReader(new FileReader(archivo))){
-            String linea;
-            br.readLine();            
-            
-            double valor_total = 0;
-            
+        try(BufferedReader br = new BufferedReader(new FileReader(archivo))){        
+            br.readLine();   
+            String linea;         
             while ((linea = br.readLine()) != null){
-
                 String[] datos = linea.split(",");
-                
-                double precio = Double.parseDouble(datos[2]);
-                double cantidad = Double.parseDouble(datos[3]);
-                
-                double TOTAL = precio * cantidad;
-                valor_total += TOTAL;
-                
-                String datoVisual = "Codigo: " + datos[0] + " Nombre: " + datos[1] + " Precio: " + datos[2] + " Cantidad: " + datos[3] + " Total: " + TOTAL;
-                System.out.println(datoVisual);
 
+                clsArticulo cArticulo = new clsArticulo(datos[0], datos[1], Double.parseDouble(datos[2]));
+                
+                cArticulo.guardar();
                 }
-            System.out.println("El total del inventario es " + valor_total);
-        
+            br.close();
+            System.out.println("Se ha terminado la importacion.");    
         }catch(IOException e){
             System.out.println("Mensaje de error" + e.getMessage());
         }
