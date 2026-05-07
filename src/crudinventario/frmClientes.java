@@ -4,6 +4,21 @@
  */
 package crudinventario;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
+
 /**
  *
  * @author Jorgec
@@ -70,6 +85,12 @@ public class frmClientes extends javax.swing.JFrame {
         lblTipo = new javax.swing.JLabel();
         lblRazon = new javax.swing.JLabel();
         btnEliminar = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jmiImportar = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jmiExportar = new javax.swing.JMenuItem();
+        pmiExportar = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -170,7 +191,7 @@ public class frmClientes extends javax.swing.JFrame {
                     .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBuscar))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -310,6 +331,28 @@ public class frmClientes extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jmiImportar.setText("Importar ");
+        jmiImportar.addActionListener(this::jmiImportarActionPerformed);
+
+        jMenuItem1.setText("Importar CSV");
+        jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
+        jmiImportar.add(jMenuItem1);
+
+        jmiExportar.setText("Exportar JSON");
+        jmiExportar.addActionListener(this::jmiExportarActionPerformed);
+        jmiImportar.add(jmiExportar);
+
+        pmiExportar.setText("Exportar PDF");
+        pmiExportar.addActionListener(this::pmiExportarActionPerformed);
+        jmiImportar.add(pmiExportar);
+
+        jMenuBar1.add(jmiImportar);
+
+        jMenu2.setText("Informacion");
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -369,6 +412,95 @@ public class frmClientes extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        int respuesta = JOptionPane.showConfirmDialog(this,
+                "Es importante que el archivo a importar tenga el nombre " +
+                        "clientes.csv y se encuentre en la raiz del proyecto",
+                "Importacion de datos desde archivo.csv",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (respuesta == JOptionPane.YES_OPTION) {
+            clscsvClientes cCsv = new clscsvClientes();
+            cCsv.importarDatos();
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jmiExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExportarActionPerformed
+        try {
+            List<clsClientes> listaClientes = new ArrayList<>();
+            BufferedReader br = new BufferedReader(new FileReader("listado_clientes.txt"));
+            String linea;
+
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split("\\|");
+                if (datos.length >= 4) {
+                    int noCliente = Integer.parseInt(datos[0]);
+                    clsClientes nuevoCliente = new clsClientes(noCliente, datos[1], datos[2], datos[3]);
+                    listaClientes.add(nuevoCliente);
+                }
+            }
+            br.close();
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String jsonFinal = gson.toJson(listaClientes);
+
+            BufferedWriter bw = new BufferedWriter(new FileWriter("clientes_completo.json"));
+            bw.write(jsonFinal);
+            bw.close();
+
+            JOptionPane.showMessageDialog(this, "¡Exportación a JSON exitosa!");
+
+        } catch (Exception e) {
+            System.out.println(" Error durante la exportación a JSON: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jmiExportarActionPerformed
+
+    private void pmiExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pmiExportarActionPerformed
+        Document documento = new Document();
+
+        try {
+            PdfWriter.getInstance(documento, new FileOutputStream("Reporte_Clientes.pdf"));
+            documento.open();
+
+            documento.add(new Paragraph("Reporte Gerencial de Clientes - Taller 360"));
+            documento.add(new Paragraph(" "));
+
+            PdfPTable tabla = new PdfPTable(4);
+            tabla.addCell("NO. CLIENTE");
+            tabla.addCell("NOMBRE");
+            tabla.addCell("TIPO");
+            tabla.addCell("RAZÓN SOCIAL");
+
+            BufferedReader br = new BufferedReader(new FileReader("listado_clientes.txt"));
+            String linea;
+
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split("\\|");
+                if (datos.length >= 4) {
+                    tabla.addCell(datos[0]);
+                    tabla.addCell(datos[1]);
+                    tabla.addCell(datos[2]);
+                    tabla.addCell(datos[3]);
+                }
+            }
+            br.close();
+
+            documento.add(tabla);
+            documento.close();
+
+            javax.swing.JOptionPane.showMessageDialog(this, "¡PDF generado con éxito en la carpeta del proyecto!");
+
+        } catch (Exception e) {
+            System.out.println("Error al generar el PDF: " + e.getMessage());
+            javax.swing.JOptionPane.showMessageDialog(this, "Error al generar el PDF: " + e.getMessage(), "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_pmiExportarActionPerformed
+
+    private void jmiImportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiImportarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jmiImportarActionPerformed
 
     private void lstClientesValueChanged(javax.swing.event.ListSelectionEvent evt) {
         if (!evt.getValueIsAdjusting()) {
@@ -467,16 +599,22 @@ public class frmClientes extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JMenuItem jmiExportar;
+    private javax.swing.JMenu jmiImportar;
     private javax.swing.JLabel lblCliente;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblRazon;
     private javax.swing.JLabel lblTipo;
     private javax.swing.JList<String> lstClientes;
+    private javax.swing.JMenuItem pmiExportar;
     private javax.swing.JTextField txtBusqueda;
     private javax.swing.JTextField txtNoCliente;
     private javax.swing.JTextField txtNoCliente1;
