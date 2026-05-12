@@ -450,6 +450,16 @@ public class frmArticulo extends javax.swing.JFrame {
             // 3. Abrimos el documento para empezar a escribirle
             documento.open();
 
+            // Insertar el logo en la parte superior
+            try {
+                com.itextpdf.text.Image logo = com.itextpdf.text.Image.getInstance("logo.png");
+                logo.scaleToFit(150, 150); 
+                logo.setAlignment(com.itextpdf.text.Element.ALIGN_CENTER);
+                documento.add(logo);
+            } catch (Exception e) {
+                System.out.println("Nota: No se pudo cargar el logo.png: " + e.getMessage());
+            }
+
             // 4. Agregamos un Título
             documento.add(new Paragraph("Reporte Gerencial de Inventario - Taller 360"));
             documento.add(new Paragraph(" ")); // Un salto de línea para dar espacio
@@ -467,6 +477,9 @@ public class frmArticulo extends javax.swing.JFrame {
             BufferedReader br = new BufferedReader(new FileReader("listado_articulos.txt"));
             String linea;
             double totalInversion = 0;
+            
+            int articulosEconomicos = 0;
+            int articulosPremium = 0;
 
             while ((linea = br.readLine()) != null) {
                 String[] datos = linea.split("\\|");
@@ -477,7 +490,14 @@ public class frmArticulo extends javax.swing.JFrame {
 
                     // Calculamos el total
                     try {
-                        totalInversion += Double.parseDouble(datos[2]);
+                        double precioParseado = Double.parseDouble(datos[2]);
+                        totalInversion += precioParseado;
+                        
+                        if (precioParseado <= 500.0) {
+                            articulosEconomicos++;
+                        } else {
+                            articulosPremium++;
+                        }
                     } catch (Exception e) {
                     }
 
@@ -490,6 +510,25 @@ public class frmArticulo extends javax.swing.JFrame {
 
             // 8. Inyectamos la tabla terminada dentro del documento PDF
             documento.add(tabla);
+            
+            // 1. Llenamos el Dataset con los totales calculados 
+            org.jfree.data.general.DefaultPieDataset dataset = new org.jfree.data.general.DefaultPieDataset(); 
+            dataset.setValue("Económicos (<= $500)", articulosEconomicos); 
+            dataset.setValue("Premium (> $500)", articulosPremium);
+
+            // 2. Creamos la gráfica 
+            org.jfree.chart.JFreeChart grafica = org.jfree.chart.ChartFactory.createPieChart( 
+                    "Análisis de Precios de Inventario", 
+                    dataset, true, true, false);
+
+            // 3. Guardamos como PNG temporal 
+            java.io.File archivoTemporal = new java.io.File("grafica_temp.png"); 
+            org.jfree.chart.ChartUtils.saveChartAsPNG(archivoTemporal, grafica, 500, 300);
+
+            // 4. Inyectar imagen al PDF
+            com.itextpdf.text.Image imagenGrafica = com.itextpdf.text.Image.getInstance(archivoTemporal.getAbsolutePath());
+            imagenGrafica.setAlignment(com.itextpdf.text.Element.ALIGN_CENTER);
+            documento.add(imagenGrafica);
 
             // Agregamos el total de inversión
             documento.add(new Paragraph(" "));
